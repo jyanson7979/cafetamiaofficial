@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cafe Tamia — Coffee Shop</title>
+    <link rel="icon" type="image/png" href="logo.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: "Inter", sans-serif; background: black; color: white; line-height: 1.6; min-height: 100vh; }
+        img { max-width: 100%; display: block; height: auto; }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 32px;
+            background: #ffffff;
+            z-index: 1000;
+            box-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+            transition: box-shadow 0.3s ease;
+        }
+        .navbar.scrolled { background: #ffffff; box-shadow: 0 4px 36px rgba(0, 0, 0, 0.35); }
+        .login-nav-btn {
+            background: #c8946a;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Inter", sans-serif;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            order: 1;
+            box-shadow: 0 4px 14px rgba(200, 148, 106, 0.3);
+            flex-shrink: 0;
+        }
+        .login-nav-btn:hover { background: #b07d56; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200, 148, 106, 0.5); }
+        .login-nav-btn i { font-size: 0.9rem; }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+        .nav-links li a::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: black;
+            transition: width 0.25s ease;
+        }
+        .nav-links li a:hover::after { width: 100%; }
+        .nav-links li a:hover { color: #c8946a; }
+        .nav-icon { display: none; width: 20px; text-align: center; margin-right: 10px; color: #2c1810; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            padding: 8px 10px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            order: -1;
+            margin-right: auto;
+        }
+        .hamburger .bar {
+            width: 28px;
+            height: 2.5px;
+            background-color: black;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        .hamburger.active .bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .hamburger.active .bar:nth-child(2) { opacity: 0; }
+        .hamburger.active .bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+        .story-section { padding: 100px 0 120px; background: transparent; position: relative; }
+        .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .story-image { width: 100%; border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow none; }
+        .story-image:hover { transform: scale(1.01); box-shadow: none; }
+        .story-text { padding: 8px 0; position: relative; }
+        .story-text h2 { font-family: "Playfair Display", serif; font-size: clamp(2rem, 3.6vw, 2.8rem); font-weight: 700; color: #ffffff; line-height: 1.2; margin-bottom: 20px; }
+        .story-text h2 .accent { color: #c8946a; font-style: italic; }
+        .story-text p { font-size: 1.05rem; color: rgba(255, 255, 255, 0.8); line-height: 1.8; margin-bottom: 18px; font-weight: 350; }
+
+        .order-btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 14px 28px;
+            background: #c8946a;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(200, 148, 106, 0.3);
+        }
+        .order-btn:hover { background: #b07d56; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200, 148, 106, 0.5); }
+
+        .social-links { display: flex; gap: 15px; }
+        .social-icon { font-size: 28px; transition: transform 0.3s ease; display: inline-block; line-height: 1; }
+        .social-icon:hover { transform: scale(1.15); }
+        .fb-icon i { color: #1877f2; }
+        .ig-icon i {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-modal.active { display: flex; }
+        .login-card {
+            background: #1a1a1a;
+            padding: 40px 32px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            display: block;
+            border: 3px solid #c8946a;
+            box-shadow: 0 8px 32px rgba(200, 148, 106, 0.2);
+        }
+        .login-card h3 { color: #fff; font-family: "Playfair Display", serif; font-size: 1.8rem; margin-bottom: 4px; }
+        .login-card label { display: block; color: #ddd; font-size: 0.9rem; margin-bottom: 6px; font-weight: 500; text-align: left; }
+        .login-card input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 40px;
+            border: 1px solid #444;
+            background: #111;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 18px;
+            outline: none;
+            transition: border 0.2s;
+            text-align: left;
+        }
+        .login-card input:focus { border-color: #c8946a; }
+        .login-card .login-submit {
+            background: #c8946a;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-card .login-submit:hover { background: #b07d56; }
+        .login-card .close-modal {
+            color: #888;
+            text-align: right;
+            display: block;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .login-card .close-modal:hover { color: #fff; }
+        .login-error { color: #e74c3c; font-size: 0.9rem; margin-top: 8px; display: none; }
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 18px;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px 48px 12px 14px;
+            border-radius: 40px;
+            border: 1px solid #444;
+            background: #111;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+            text-align: left;
+            margin-bottom: 0;
+        }
+        .password-wrapper input:focus { border-color: #c8946a; }
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .toggle-password:hover { color: #fff; }
+
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #c8946a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
+        .rate-limit-message { color: #f39c12; font-size: 0.85rem; margin-top: 8px; display: none; }
+
+        .live-time-widget {
+            background-color: black;
+            border-radius: 28px;
+            padding: 18px 20px 20px 20px;
+            margin-top: 20px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: none;
+            border: none;
+        }
+        .widget-header {
+            margin-bottom: 12px;
+        }
+        .widget-header .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: #f0f0f0;
+        }
+
+        .clock-card {
+            position: relative;
+            background-color: #3194f6;
+            border-radius: 24px;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 28px;
+            overflow: visible;
+        }
+
+        .clock-card .character {
+            position: absolute;
+            bottom: -80px;
+            left: -90px;
+            width: 315px;
+            height: 365px;
+            z-index: 2;
+            filter: none;
+        }
+        .clock-card .character img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        .clock-card .time-display {
+            text-align: right;
+            user-select: none;
+            z-index: 2;
+            padding-left: 120px;
+        }
+        .clock-card .time-display .live-time {
+            font-size: 46px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .clock-card .time-display .live-date {
+            font-size: 16px;
+            font-weight: 500;
+            color: #e2f0ff;
+            margin-top: 6px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .nav-icon { display: inline-block; }
+            .navbar { padding: 14px 16px; }
+            .hamburger { display: flex; order: -1; margin-right: auto; }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 280px;
+                height: 100vh;
+                background: #ffffff;
+                flex-direction: column;
+                justify-content: center;
+                gap: 24px;
+                padding: 40px 24px;
+                transition: left 0.4s ease;
+                box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+            }
+            .nav-links.active { left: 0; }
+            .nav-links li a { font-size: 0; gap: 0; }
+            .nav-links li a .nav-icon { font-size: 1.4rem; margin-right: 0; color: #2c1810; }
+            .story-grid { grid-template-columns: 1fr; gap: 32px; }
+            .login-nav-btn { font-size: 0.75rem; padding: 6px 14px; gap: 6px; }
+            .login-nav-btn i { font-size: 0.75rem; }
+            .clock-card { min-height: 220px; }
+    .clock-card .time-display .live-time { font-size: 24px; }
+    .clock-card .character { width: 400px; height: 460px; left: -120px; bottom: -100px; }
+    .clock-card .time-display { padding-left: 210px; }
+}
+
+@media (max-width: 480px) {
+    .clock-card { min-height: 200px; }
+    .clock-card .character { width: 390px; height: 445px; left: -110px; bottom: -115px; }
+    .clock-card .time-display { padding-left: 170px; }
+    .clock-card .time-display .live-time { font-size: 20px; }
+    .clock-card .time-display .live-date { font-size: 11px; }
+}
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="hamburger" id="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="home.html"><i class="fa-solid fa-house nav-icon"></i> Home</a></li>
+            <li><a href="FAQ.html"><i class="fa-solid fa-circle-question nav-icon"></i> FAQ</a></li>
+            <li><a href="Location.html"><i class="fa-solid fa-location-dot nav-icon"></i> Location</a></li>
+            <li><a href="ContactUs.html"><i class="fa-solid fa-phone nav-icon"></i> Contact Us</a></li>
+            <li><a href="ShareUsWithYourFriends.html"><i class="fa-solid fa-share-nodes nav-icon"></i> Share Us</a></li>
+        </ul>
+
+        <button class="login-nav-btn" id="loginBtn">
+            <i class="fa-solid fa-lock"></i>
+            LOGIN
+        </button>
+    </nav>
+
+    <section class="story-section" id="story">
+        <div class="container">
+            <div class="story-grid">
+
+                <div class="story-image">
+                    <div class="live-time-widget">
+                        <div class="widget-header">
+                            <div class="greeting"></div>
+                        </div>
+
+                        <div class="clock-card">
+                            <div class="character">
+                                <img src="tamia.png" alt="Civet Mascot" />
+                            </div>
+                            <div class="time-display">
+                                <div class="live-time" id="liveTime">--:-- --</div>
+                                <div class="live-date" id="liveDate">Loading date...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61579058227638" target="_blank" class="social-icon fb-icon">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/cafe_tamia?utm_source=ig_web_button_share_sheet&igsh=cjVxbTBzbjdnOGVz" target="_blank" class="social-icon ig-icon">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                    <br>
+                    <a href="OrderHereandOrderSummary.html" class="order-btn">Order Here</a>
+                </div>
+
+                <div class="story-text">
+                    <h2>Coffee that brings<br /><span class="accent">people together.</span></h2>
+                    <p>Coffee has a unique way of bringing people together. It starts conversations, creates memories, and turns ordinary moments into something special.</p>
+                    <p>At Cafe Tamia, we are committed to serving quality coffee and exceptional customer care in every interaction. Every drink is prepared with dedication, every guest is welcomed with sincerity, and every visit is valued.</p>
+                    <p>Whether you're here for your daily favorite or discovering something new, we hope you'll find comfort, connection, and a place worth returning to.</p>
+                    <p>Because great coffee should feel personal.</p>
+                    <br>
+                    <p>P.S. This is the official website of Cafe Tamia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="login-modal" id="loginModal">
+        <div class="login-card">
+            <img src="logo.jpg" alt="Cafe Tamia Logo" class="login-logo" />
+            <h3>Administrator Login</h3>
+            <br>
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" />
+            <label for="loginPassword">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="loginPassword" placeholder="Enter your password" />
+                <button type="button" class="toggle-password" id="togglePassword">
+                    <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+
+            <div class="loading-spinner" id="loadingSpinner"></div>
+
+            <button class="login-submit" id="loginSubmit">Log In</button>
+            <div class="login-error" id="loginError">Invalid email or password.</div>
+            <div class="rate-limit-message" id="rateLimitMessage">Too many failed attempts. Please wait 30 seconds.</div>
+            <span class="close-modal" id="closeModal">Close</span>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const timeString = `${hours}:${minutes} ${ampm}`;
+            document.getElementById('liveTime').textContent = timeString;
+
+            const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            document.getElementById('liveDate').textContent = dateString;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        function toggleMenu() {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+        hamburger.addEventListener('click', toggleMenu);
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 40) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+
+        // NEW HASH + SALT (rotated password)
+        const STORED_HASH = "56d36395a6f90901cd2633c187a6ef31e7afd40567db661846546e95a925c7e0";
+        const STORED_SALT = "82c4858851b9cdfe4c1aef40acb77ea1";
+        const PBKDF2_ITERATIONS = 100000;
+
+        let loginAttempts = 0;
+        let lockoutTime = 0;
+        const MAX_ATTEMPTS = 5;
+        const LOCKOUT_DURATION = 30000;
+
+        const loginBtn = document.getElementById('loginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const rateLimitMessage = document.getElementById('rateLimitMessage');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPassword.setAttribute('type', type);
+            eyeIcon.className = type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+        });
+
+        function openModal() {
+            loginModal.classList.add('active');
+            loginError.style.display = 'none';
+            rateLimitMessage.style.display = 'none';
+            loginEmail.value = '';
+            loginPassword.value = '';
+            if (Date.now() < lockoutTime) {
+                const remaining = Math.ceil((lockoutTime - Date.now()) / 1000);
+                rateLimitMessage.textContent = 'Too many failed attempts. Please wait ' + remaining + ' seconds.';
+                rateLimitMessage.style.display = 'block';
+                loginSubmit.disabled = true;
+                loginSubmit.style.opacity = '0.5';
+                loginSubmit.style.cursor = 'not-allowed';
+                setTimeout(function() {
+                    loginSubmit.disabled = false;
+                    loginSubmit.style.opacity = '1';
+                    loginSubmit.style.cursor = 'pointer';
+                    rateLimitMessage.style.display = 'none';
+                }, lockoutTime - Date.now());
+            } else {
+                loginSubmit.disabled = false;
+                loginSubmit.style.opacity = '1';
+                loginSubmit.style.cursor = 'pointer';
+            }
+            loginEmail.focus();
+        }
+
+        function closeModalFunc() {
+            loginModal.classList.remove('active');
+            loginError.style.display = 'none';
+            rateLimitMessage.style.display = 'none';
+            loadingSpinner.style.display = 'none';
+            loginSubmit.disabled = false;
+            loginSubmit.style.opacity = '1';
+            loginSubmit.style.cursor = 'pointer';
+        }
+
+        loginBtn.addEventListener('click', openModal);
+        closeModal.addEventListener('click', closeModalFunc);
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) closeModalFunc();
+        });
+
+        function verifyPassword(inputPassword) {
+            const hash = CryptoJS.PBKDF2(inputPassword, STORED_SALT, {
+                keySize: 256 / 32,
+                iterations: PBKDF2_ITERATIONS
+            }).toString();
+            return hash === STORED_HASH;
+        }
+
+        loginSubmit.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (Date.now() < lockoutTime) {
+                const remaining = Math.ceil((lockoutTime - Date.now()) / 1000);
+                rateLimitMessage.textContent = 'Too many failed attempts. Please wait ' + remaining + ' seconds.';
+                rateLimitMessage.style.display = 'block';
+                return;
+            }
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+            if (!email || !password) {
+                loginError.textContent = 'Please fill in all fields.';
+                loginError.style.display = 'block';
+                return;
+            }
+            loadingSpinner.style.display = 'block';
+            loginSubmit.disabled = true;
+            loginSubmit.style.opacity = '0.5';
+            loginSubmit.textContent = 'Verifying...';
+            setTimeout(function() {
+                const isValid = verifyPassword(password);
+                if (isValid) {
+                    loginAttempts = 0;
+                    lockoutTime = 0;
+                    sessionStorage.setItem('isAdminLoggedIn', 'true');
+                    sessionStorage.setItem('loginTime', Date.now().toString());
+                    window.location.href = 'management.html';
+                } else {
+                    loginAttempts++;
+                    if (loginAttempts >= MAX_ATTEMPTS) {
+                        lockoutTime = Date.now() + LOCKOUT_DURATION;
+                        loginSubmit.disabled = true;
+                        loginSubmit.style.opacity = '0.5';
+                        loginSubmit.style.cursor = 'not-allowed';
+                        const remaining = Math.ceil(LOCKOUT_DURATION / 1000);
+                        rateLimitMessage.textContent = 'Too many failed attempts. Please wait ' + remaining + ' seconds.';
+                        rateLimitMessage.style.display = 'block';
+                        setTimeout(function() {
+                            loginSubmit.disabled = false;
+                            loginSubmit.style.opacity = '1';
+                            loginSubmit.style.cursor = 'pointer';
+                            rateLimitMessage.style.display = 'none';
+                            loginAttempts = 0;
+                            lockoutTime = 0;
+                        }, LOCKOUT_DURATION);
+                    } else {
+                        const remainingAttempts = MAX_ATTEMPTS - loginAttempts;
+                        loginError.textContent = 'Invalid email or password. ' + remainingAttempts + ' attempt(s) remaining.';
+                        loginError.style.display = 'block';
+                        loginError.style.animation = 'none';
+                        setTimeout(function() {
+                            loginError.style.animation = 'shake 0.4s ease';
+                        }, 10);
+                    }
+                }
+                loadingSpinner.style.display = 'none';
+                loginSubmit.disabled = false;
+                loginSubmit.textContent = 'Log In';
+            }, 400);
+        });
+
+        loginEmail.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') loginSubmit.click();
+        });
+        loginPassword.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') loginSubmit.click();
+        });
+    </script>
+</body>
+</html>

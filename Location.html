@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafe Tamia — Location</title>
+  <link rel="icon" type="image/png" href="logo.jpg">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=League+Spartan:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-dim: #9c7a2e;
+      --gold-pale: rgba(201, 168, 76, 0.12);
+      --gold-border: rgba(201, 168, 76, 0.3);
+      --white: #f5f0e8;
+      --off-white: rgba(245, 240, 232, 0.85);
+      --muted: rgba(245, 240, 232, 0.45);
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.07);
+      --divider: rgba(201, 168, 76, 0.2);
+    }
+
+    body {
+      font-family: 'League Spartan', sans-serif;
+      background-color: #080808;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 30px;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .hero-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      font-weight: 400;
+    }
+
+    /* Main */
+    main {
+      width: 90%;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      flex: 1;
+    }
+
+    .location-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--gold);
+      margin-bottom: 12px;
+      letter-spacing: 0.06em;
+    }
+
+    .location-section h3:not(:first-of-type) {
+      margin-top: 40px;
+    }
+
+    .location-intro {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--off-white);
+      letter-spacing: 0.05em;
+      margin-bottom: 30px;
+    }
+
+    /* Map Containers */
+    .map-container {
+      border: 1px solid var(--gold-border);
+      border-radius: 2px;
+      overflow: hidden;
+      background-color: #080808;
+      width: 100%;
+      height: 400px;
+    }
+
+    #leafletMap {
+      width: 100%;
+      height: 400px;
+      border: 1px solid var(--gold-border);
+      border-radius: 2px;
+    }
+
+    .map-container iframe {
+      border: 0;
+    }
+
+    .map-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--divider);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer .foot-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+    }
+
+    footer a {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--gold);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      main {
+        width: 95%;
+        margin: 20px auto;
+        padding: 15px;
+      }
+
+      .map-container,
+      #leafletMap {
+        height: 300px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1 class="hero-title">📍 Find Us</h1>
+    <p class="hero-sub">Visit Cafe Tamia</p>
+  </div>
+
+  <main>
+    <section class="location-section">
+
+      <p class="location-intro">
+        <i class="fas fa-location-dot" style="color:var(--gold);"></i> 
+
+      </p>
+
+      <div class="map-label">📍 Google Maps</div>
+      <h3>Google Maps</h3>
+
+      <!-- GOOGLE MAP EMBED -->
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.890014076472!2d125.08881187405625!3d7.906557605549931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32ff19000bbe727f%3A0x87bbb674211f568d!2sCafe%20Tamia!5e0!3m2!1sen!2sph!4v1755658342390!5m2!1sen!2sph"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="map-label" style="margin-top:40px;">🗺️ OpenStreetMap</div>
+      <h3>OpenStreetMap (Leaflet)</h3>
+
+      <!-- LEAFLET MAP -->
+      <div id="leafletMap"></div>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <span class="foot-logo"></span>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <a href="home.html">← Back to Home</a>
+      <span style="color:var(--muted);font-size:0.65rem;letter-spacing:0.1em;">
+         <span style="color:var(--gold);"></span>
+      </span>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- LEAFLET MAP SCRIPT -->
+  <script>
+    // Cafe Tamia coordinates
+    var cafeLat = 7.9065576;
+    var cafeLng = 125.090986;
+
+    // Initialize Leaflet map
+    var map = L.map('leafletMap').setView([cafeLat, cafeLng], 17);
+
+    // Load OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marker
+    L.marker([cafeLat, cafeLng])
+      .addTo(map)
+      .bindPopup("<b>Cafe Tamia</b><br>")
+      .openPopup();
+  </script>
+
+</body>
+</html>

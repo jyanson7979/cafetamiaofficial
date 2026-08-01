@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafe Tamia - Coffee Shop</title>
+ <link rel="icon" type="image/png" href="logo.jpg">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: black;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    padding: 40px 20px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .video-wrap {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: black;
+  }
+
+  video {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .greeting {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .tagline {
+    color: #cfcfcf;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.5;
+    max-width: 360px;
+  }
+
+  .btn-get-started {
+    background-color: #7aa874;
+    color: #ffffff;
+    border: none;
+    padding: 14px 40px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .btn-get-started:hover {
+    background-color: #6c9866;
+    transform: translateY(-2px);
+  }
+
+  .btn-get-started:active {
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="video-wrap">
+      <video autoplay muted loop playsinline>
+        <source src="Watermark Remover-Mark removal-Hailuo_Video_Waving then saying hello then _529310770786467844.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <p class="greeting">Kumusta!</p>
+
+    <p class="tagline">Explore Cafe Tamia. Discover Cafe Tamia.</p>
+
+   <a href="home.html" class="btn-get-started">Get Started</a>
+
+  </div>
+
+</body>
+</html>

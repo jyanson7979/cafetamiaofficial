@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafe Tamia — FAQ</title>
+  <link rel="icon" type="image/png" href="logo.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=League+Spartan:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-dim: #9c7a2e;
+      --gold-pale: rgba(201, 168, 76, 0.12);
+      --gold-border: rgba(201, 168, 76, 0.3);
+      --white: #f5f0e8;
+      --off-white: rgba(245, 240, 232, 0.85);
+      --muted: rgba(245, 240, 232, 0.45);
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.07);
+      --divider: rgba(201, 168, 76, 0.2);
+    }
+
+    body {
+      font-family: 'League Spartan', sans-serif;
+      background-color: #080808;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── FEATURES SECTION ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 80px auto 50px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 30px 20px;
+      text-align: center;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .feature-box:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    .feature-box i {
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+
+    .feature-box h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--off-white);
+      margin-bottom: 8px;
+    }
+
+    .feature-box p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+    }
+
+    /* ── FAQ SECTION ── */
+    .faq {
+      max-width: 700px;
+      margin: 20px auto 60px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .faq h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .faq-item:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    .faq-item h3 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      margin-bottom: 6px;
+    }
+
+    .faq-item p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--divider);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer .foot-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+    }
+
+    footer a {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--gold);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .features {
+        grid-template-columns: 1fr;
+        margin: 40px auto 30px;
+      }
+
+      .feature-box {
+        padding: 20px;
+      }
+
+      .faq h2 {
+        font-size: 1.8rem;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature-box">
+      <i class="fas fa-store"></i>
+      <h3>Now Bigger Space</h3>
+      <p>Enjoy a more spacious and comfortable area for studying, hanging out, or relaxing.</p>
+    </div>
+
+    <div class="feature-box">
+      <i class="fas fa-wifi"></i>
+      <h3>Free Wi-Fi</h3>
+      <p>Stay connected while enjoying your favorite coffee.</p>
+    </div>
+
+    <div class="feature-box">
+      <i class="fas fa-bolt"></i>
+      <h3>No Brownout</h3>
+      <p>No worries during outages, thanks to Cafe Tamia's own generator.</p>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>Is there parking available?</h3>
+      <p>Parking is available in front of our café.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do you have something like Coffee Cart?</h3>
+      <p>Yes, we at Cafe Tamia provide a unique, interactive Coffee Cart experience wherever customers are, turning everyday moments into a special, social occasion.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Can we host our event at Cafe Tamia?</h3>
+      <p>Yes. You can book our café for your event. Contact us anytime for info and reservations.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="foot-logo"></span>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <a href="home.html">← Back to Home</a>
+      <span style="color:var(--muted);font-size:0.65rem;letter-spacing:0.1em;">
+        <span style="color:var(--gold);"></span>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

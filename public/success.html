@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed – Cafe Tamia</title>
+  <link rel="icon" type="image/png" href="logo.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=League+Spartan:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'League Spartan', sans-serif;
+      background: #0a0a0a;
+      color: #f5f0e8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 40px 32px;
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+    .icon { font-size: 4rem; margin-bottom: 12px; }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      color: #c9a84c;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+    .sub {
+      color: rgba(245,240,232,0.6);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .order-details {
+      text-align: left;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+    .order-details p { margin: 6px 0; }
+    .order-details strong { color: #c9a84c; }
+    .btn {
+      display: inline-block;
+      background: #c9a84c;
+      color: #0a0a0a;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 40px;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: 0.2s;
+    }
+    .btn:hover { background: #dbb95e; transform: scale(1.02); }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #f5f0e8;
+      margin-left: 8px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">✅</div>
+  <h1>Thank You!</h1>
+  <p class="sub">Your order has been placed successfully.</p>
+
+  <div class="order-details" id="orderSummary">
+    <p><strong>Order Reference:</strong> <span id="ref">N/A</span></p>
+    <p><strong>Customer:</strong> <span id="name">—</span></p>
+    <p><strong>Total:</strong> <span id="total">₱0</span></p>
+    <p><strong>Items:</strong> <span id="items">—</span></p>
+  </div>
+
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <a href="OrderHereandOrderSummary.html" class="btn">Back to Menu</a>
+  </div>
+</div>
+
+<script>
+  // Retrieve order data stored in localStorage by the main page
+  const orderData = JSON.parse(localStorage.getItem('cafe_tamia_order')) || {};
+
+  document.getElementById('ref').textContent = orderData.orderRef || 'N/A';
+  document.getElementById('name').textContent = orderData.customerName || '—';
+  document.getElementById('total').textContent = orderData.total ? `₱${orderData.total}` : '₱0';
+  document.getElementById('items').textContent = orderData.items
+    ? orderData.items.map(i => i.name).join(', ')
+    : '—';
+
+  // Optionally clear stored order after showing
+  // localStorage.removeItem('cafe_tamia_order');
+</script>
+</body>
+</html>

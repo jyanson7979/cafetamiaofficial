@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Us</title>
+  <link rel="icon" type="image/png" href="logo.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=League+Spartan:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-dim: #9c7a2e;
+      --gold-pale: rgba(201, 168, 76, 0.12);
+      --gold-border: rgba(201, 168, 76, 0.3);
+      --white: #f5f0e8;
+      --off-white: rgba(245, 240, 232, 0.85);
+      --muted: rgba(245, 240, 232, 0.45);
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.07);
+      --divider: rgba(201, 168, 76, 0.2);
+    }
+
+    body {
+      font-family: 'League Spartan', sans-serif;
+      background-color: #080808;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── FEATURES SECTION ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 80px auto 50px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 30px 20px;
+      text-align: center;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .feature-box:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    .feature-box i {
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+
+    .feature-box h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--off-white);
+      margin-bottom: 8px;
+    }
+
+    .feature-box p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+    }
+
+    /* ── HOW TO PAY SECTION ── */
+    .pay-section {
+      max-width: 700px;
+      margin: 20px auto 50px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .pay-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .pay-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 35px 30px;
+      text-align: center;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .pay-box:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    .pay-box i {
+      font-size: 3rem;
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+
+    .pay-box h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--off-white);
+      margin-bottom: 10px;
+    }
+
+    .pay-box p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .pay-box .qr-placeholder {
+      max-width: 250px;
+      margin: 0 auto 20px;
+      padding: 20px;
+      border: 2px dashed var(--gold-border);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .pay-box .qr-placeholder i {
+      font-size: 4rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .pay-box .qr-placeholder p {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .pay-box .qr-placeholder img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .pay-box .tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-top: 10px;
+    }
+
+    .pay-box .tagline span {
+      color: var(--off-white);
+      font-weight: 300;
+    }
+
+    /* ── FAQ SECTION ── */
+    .faq {
+      max-width: 700px;
+      margin: 20px auto 60px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .faq h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .faq-item:hover {
+      border-color: var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    .faq-item h3 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      margin-bottom: 6px;
+    }
+
+    .faq-item p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--divider);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer .foot-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+    }
+
+    footer a {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--gold);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .features {
+        grid-template-columns: 1fr;
+        margin: 40px auto 30px;
+      }
+
+      .feature-box {
+        padding: 20px;
+      }
+
+      .faq h2,
+      .pay-section h2 {
+        font-size: 1.8rem;
+      }
+
+      .pay-box {
+        padding: 25px 20px;
+      }
+
+      .pay-box .qr-placeholder {
+        max-width: 200px;
+        padding: 15px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+  <!-- How to Pay Section -->
+  <section class="pay-section">
+    <h2></h2>
+    <div class="pay-box">
+      <i class="fas fa-qrcode"></i>
+      <h3>Share Us With Your Friends!</h3>
+
+      <br>
+
+      <div class="qr-placeholder">
+        <!-- Replace the src with your actual QR code image -->
+        <img src="ShareUs.png" alt="GCash QR Code" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='block';">
+        <div class="fallback" style="display:none;">
+          <i class="fas fa-camera"></i>
+          <p></p>
+          <p style="font-size:0.6rem;color:var(--gold);"></p>
+
+        </div>
+      </div>
+
+      <p>https://cafetamiaofficial.vercel.app/</p>
+  
+  <!-- Footer -->
+  <footer>
+    <span class="foot-logo"></span>
+    <div class="footer-links">
+      <a href="home.html">← Back to Home</a>
+    </div>
+  </footer>
+
+</body>
+</html>
