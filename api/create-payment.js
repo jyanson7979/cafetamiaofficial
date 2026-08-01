@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     data: {
       attributes: {
         amount: Math.round(total * 100), // centavos
-        payment_method_allowed: ['card', 'qrph'],
+        payment_method_allowed: ['card', 'gcash'],
         payment_method_options: {
           card: { request_three_d_secure: 'any' }
         },
