@@ -22,15 +22,19 @@ export default async function handler(req, res) {
 const payload = {
   data: {
     attributes: {
-      amount: Math.round(total * 100), // centavos
-      // Diri ang saktong key! Kinahanglan array ([ ]) nga naay 'card'
-      payment_method_types: ['card'],  
+      amount: Math.round(total * 100),
+      currency: 'PHP',
+
+      payment_method_allowed: ['card'], // ✅
+
       payment_method_options: {
-        card: { request_three_d_secure: 'any' }
+        card: {
+          request_three_d_secure: 'any'
+        }
       },
+
       description: `Cafe Tamia Order: ${customerName}`,
       statement_descriptor: 'Cafe Tamia',
-      currency: 'PHP',
       capture_type: 'automatic'
     }
   }
