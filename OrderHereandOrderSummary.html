@@ -590,40 +590,39 @@
         }
 
         .nav-cart {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-    z-index: 9999;
-}
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 9999;
+        }
 
-.cart-count {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background: red;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <!-- ─── NAV ─── -->
-<nav>
-    <div class="nav-cart" onclick="toggleDrawer(true)">
-        🛒
-        <span class="cart-count" id="cartCount">0</span>
-    </div>
-</nav>
+    <nav>
+        <div class="nav-cart" onclick="toggleDrawer(true)">
+            🛒
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
+    </nav>
 
     <!-- ─── FILTERS ─── -->
     <div class="filters" id="filterContainer">
@@ -669,7 +668,7 @@
     <div class="payment-status" id="paymentStatus">
         <div class="icon" id="statusIcon">⏳</div>
         <h3 id="statusTitle">Processing...</h3>
-        <p id="statusMsg">Please wait while we connect to PayMongo.</p>
+        <p id="statusMsg">Please wait...</p>
         <button class="close-status" onclick="closeStatus()">Close</button>
     </div>
 
@@ -682,11 +681,13 @@
             <div class="drawer-total"><span>Total</span><span id="drawerTotal">₱0</span></div>
 
             <form class="drawer-form" id="orderForm">
-    <input type="text" id="customerName" placeholder="Your Name" required />
-    <input type="text" id="customerAddress" placeholder="Your Address" required />
-    <input type="text" id="contactNumber" placeholder="Your Contact" required />
-    <button type="button" class="drawer-submit" id="submitBtn" onclick="handlePlaceOrder(event)">Pay with PayMongo</button>
-</form>
+                <input type="text" id="customerName" placeholder="Your Name" required />
+                <input type="text" id="customerAddress" placeholder="Your Address" required />
+                <input type="text" id="contactNumber" placeholder="Your Contact" required />
+                <button type="button" class="drawer-submit" id="submitBtn" onclick="handlePlaceOrder(event)">Pay with PayMongo QRPH</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         // ═══════════════════════════════════════════════════════════
@@ -757,7 +758,7 @@
                     swipeCard.style.transform = `translateX(${diffX}px) rotate(${rotate}deg)`;
                     if (diffX > 20) { indicatorLike.style.opacity = '1';
                         indicatorNope.style.opacity = '0'; } else if (diffX < -20) { indicatorNope.style.opacity =
-                        '1';
+                            '1';
                         indicatorLike.style.opacity = '0'; } else { indicatorNope.style.opacity = '0';
                         indicatorLike.style.opacity = '0'; }
                 });
@@ -1033,11 +1034,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  PAYMONGO INTEGRATION  (serverless via /api)
-        //  Two-step flow required by PayMongo's Payment Intents API:
-        //    1) /api/create-payment  -> creates the Payment Intent, returns clientKey
-        //    2) /api/attach-payment  -> creates + attaches a GCash Payment Method,
-        //                               returns the redirectUrl to send the customer to
+        //  MAIN FUNCTION: Place Order with Static QR PH
         // ═══════════════════════════════════════════════════════════
 
         async function handlePlaceOrder(e) {
@@ -1058,88 +1055,66 @@
                 return false;
             }
 
-            console.log('Checking customerName:', document.getElementById('customerName'));
-console.log('Checking customerAddress:', document.getElementById('customerAddress'));
-console.log('Checking contactNumber:', document.getElementById('contactNumber'));
-
-
-            // 2. Build order payload
+            // 2. Build order payload for formslist.com
             const orderPayload = {
-    customerName: name,
-    customerAddress: addr,
-    contactNumber: contact,
-    items: orders.map(o => ({ name: o.name, price: o.price })),
-    total: total,
-    timestamp: new Date().toISOString()
-};
+                customerName: name,
+                customerAddress: addr,
+                contactNumber: contact,
+                items: orders.map(o => ({ name: o.name, price: o.price })),
+                total: total,
+                timestamp: new Date().toISOString(),
+                orderRef: 'CT-' + Date.now().toString().slice(-6)
+            };
 
             // 3. Show loading state
             submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Creating payment...';
+            submitBtn.textContent = '⏳ Submitting Order...';
             submitBtn.classList.add('loading');
-            showStatus('⏳', 'Creating Payment', 'Please wait while we connect to PayMongo...');
+            showStatus('⏳', 'Submitting Order', 'Please wait...');
 
             try {
-                // 4. Step 1: Create the Payment Intent
-                const createResponse = await fetch('/api/create-payment', {
+                // 4. Save order to formslist.com
+                const formResponse = await fetch('https://www.formslist.com/api/v1/forms/your-form-id/submissions', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify(orderPayload)
                 });
 
-                const createData = await createResponse.json();
-
-                if (!createResponse.ok) {
-                    throw new Error(createData.error || 'Payment creation failed.');
+                if (!formResponse.ok) {
+                    throw new Error('Failed to save order to formslist.com');
                 }
 
-                // 5. Store order data in localStorage for the success page
-                localStorage.setItem('cafe_tamia_order', JSON.stringify({
-                    ...orderPayload,
-                    orderRef: createData.orderRef || 'N/A',
-                    paymentId: createData.paymentIntentId || 'N/A'
-                }));
+                // 5. Save order data to localStorage for thankyou.html
+                localStorage.setItem('cafe_tamia_order', JSON.stringify(orderPayload));
 
-                // 6. Step 2: Attach GCash as the payment method
-                showStatus('⏳', 'Redirecting to GCash', 'Please wait while we prepare your payment...');
-                submitBtn.textContent = '⏳ Redirecting...';
+                // 6. Close status
+                closeStatus();
 
-                const attachResponse = await fetch('/api/attach-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        paymentIntentId: createData.paymentIntentId,
-                        clientKey: createData.clientKey
-                    })
+                // 7. ✅ REDIRECT to QR payment page with order data as URL params
+                const params = new URLSearchParams({
+                    name: name,
+                    address: addr,
+                    contact: contact,
+                    total: total,
+                    orderRef: orderPayload.orderRef,
+                    items: JSON.stringify(orders.map(o => ({ name: o.name, price: o.price })))
                 });
 
-                const attachData = await attachResponse.json();
-
-                if (!attachResponse.ok) {
-                    throw new Error(attachData.error || 'Failed to process payment method.');
-                }
-
-                // 7. Redirect the customer to the GCash authorization page
-                closeStatus();
-                submitBtn.textContent = 'Redirecting...';
-
-                if (attachData.redirectUrl) {
-                    window.location.href = attachData.redirectUrl;
-                } else {
-                    throw new Error('No redirect URL received. Payment status: ' + attachData.status);
-                }
+                window.location.href = `qr-payment.html?${params.toString()}`;
 
             } catch (err) {
-                console.error('Payment error:', err);
+                console.error('Order submission error:', err);
                 closeStatus();
-                showStatus('❌', 'Payment Failed', err.message || 'Something went wrong. Please try again.');
+                showStatus('❌', 'Order Failed', err.message || 'Something went wrong. Please try again.');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Place Order · Pay with PayMongo';
+                submitBtn.textContent = 'Pay with PayMongo QRPH';
                 submitBtn.classList.remove('loading');
                 return false;
             }
 
-            return false; // Prevent default form submission
+            return false;
         }
 
         // ─── filter events ──────────────────────────────────────
@@ -1161,11 +1136,6 @@ console.log('Checking contactNumber:', document.getElementById('contactNumber'))
         attachSwipeEvents();
         loadMenuData();
         updateSummary();
-
-        // If user lands with ?canceled=true, show a message
-        if (window.location.search.includes('canceled=true')) {
-            showStatus('↩️', 'Payment Cancelled', 'You cancelled the payment. You can try again anytime.');
-        }
     </script>
 
 </body>

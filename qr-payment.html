@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Cafe Tamia — Scan to Pay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=League+Spartan:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --gold: #c9a84c;
+            --gold-border: rgba(201, 168, 76, 0.3);
+            --white: #f5f0e8;
+            --muted: rgba(245, 240, 232, 0.6);
+            --dark-bg: #0a0a0a;
+        }
+        body {
+            font-family: 'League Spartan', sans-serif;
+            background: var(--dark-bg);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .qr-container {
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid var(--gold-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .qr-title {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold);
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+        .qr-subtitle {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+        .order-details {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .order-details .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+        .order-details .label {
+            color: var(--muted);
+        }
+        .order-details .value {
+            color: var(--white);
+            font-weight: 500;
+        }
+        .qr-code-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            display: inline-block;
+            margin: 12px 0;
+        }
+        .qr-code-wrapper img {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        .amount-display {
+            background: rgba(201, 168, 76, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .amount-display .total-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+        .amount-display .total-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .instructions ol {
+            padding-left: 20px;
+            margin: 6px 0;
+        }
+        .instructions ol li {
+            margin-bottom: 4px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .action-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: #000;
+        }
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #444 !important;
+            color: #888;
+        }
+        .btn-secondary:hover {
+            border-color: var(--gold) !important;
+            color: var(--gold);
+        }
+        .btn-success {
+            background: #4caf50;
+            color: #fff;
+        }
+        .btn-success:hover {
+            opacity: 0.85;
+        }
+        .note {
+            margin-top: 16px;
+            color: #555;
+            font-size: 0.65rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        .status-paid {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        .status-expired {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        .hidden {
+            display: none !important;
+        }
+        @media (max-width: 480px) {
+            .qr-container {
+                padding: 20px;
+            }
+            .qr-code-wrapper img {
+                width: 160px;
+                height: 160px;
+            }
+            .amount-display .total-amount {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="qr-container" id="qrContainer">
+        <!-- Back Button -->
+        <a href="index.html" class="back-btn">← Back to Menu</a>
+
+        <!-- Title -->
+        <h1 class="qr-title">☕ Cafe Tamia</h1>
+        <p class="qr-subtitle">Scan to Pay with GCash or any QR PH app</p>
+
+        <!-- Status Badge -->
+        <div id="statusBadge" class="status-badge status-pending">⏳ Pending Payment</div>
+
+        <!-- Order Details -->
+        <div class="order-details" id="orderDetails">
+            <div class="row"><span class="label">Order #</span><span class="value" id="orderRef">---</span></div>
+            <div class="row"><span class="label">Customer</span><span class="value" id="customerNameDisplay">---</span></div>
+            <div class="row"><span class="label">Items</span><span class="value" id="itemsDisplay">---</span></div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="qr-code-wrapper">
+            <img src="QRPH.jpg" alt="Cafe Tamia QR PH" id="qrImage" />
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-display">
+            <div class="total-label">Total Amount to Pay</div>
+            <div class="total-amount" id="totalDisplay">₱0.00</div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <strong>📌 How to Pay:</strong>
+            <ol>
+                <li>Open <strong>GCash</strong> or any bank app</li>
+                <li>Tap <strong>"Pay via QR"</strong> or <strong>"Scan QR"</strong></li>
+                <li>Scan the QR code above</li>
+                <li>Enter the exact amount: <strong id="instructionAmount">₱0.00</strong></li>
+                <li>Confirm payment and wait for confirmation</li>
+            </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-secondary" onclick="window.location.href='index.html'">← Back</button>
+            <button class="btn-primary" onclick="copyOrderDetails()">📋 Copy Details</button>
+            <button class="btn-success hidden" id="paidBtn" onclick="goToThankYou()">✅ I've Paid</button>
+        </div>
+
+        <!-- Manual verification note -->
+        <p class="note">
+            ⚠️ After scanning and paying, please click <strong>"I've Paid"</strong> to confirm your order.
+        </p>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        //  LOAD ORDER DETAILS FROM URL PARAMS
+        // ═══════════════════════════════════════════════════════════
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                name: params.get('name') || 'Guest',
+                address: params.get('address') || 'N/A',
+                contact: params.get('contact') || 'N/A',
+                total: parseFloat(params.get('total')) || 0,
+                orderRef: params.get('orderRef') || 'CT-' + Date.now().toString().slice(-6),
+                items: JSON.parse(params.get('items') || '[]')
+            };
+        }
+
+        function displayOrderDetails() {
+            const data = getQueryParams();
+
+            // Display order details
+            document.getElementById('orderRef').textContent = data.orderRef;
+            document.getElementById('customerNameDisplay').textContent = data.name;
+
+            // Display items
+            const itemsDisplay = data.items.map(i => `${i.name} (₱${i.price})`).join(', ');
+            document.getElementById('itemsDisplay').textContent = itemsDisplay || 'No items';
+
+            // Display total
+            const totalFormatted = `₱${data.total.toFixed(2)}`;
+            document.getElementById('totalDisplay').textContent = totalFormatted;
+            document.getElementById('instructionAmount').textContent = totalFormatted;
+
+            // Save order data to localStorage for thankyou.html
+            localStorage.setItem('cafe_tamia_order', JSON.stringify({
+                customerName: data.name,
+                customerAddress: data.address,
+                contactNumber: data.contact,
+                total: data.total,
+                orderRef: data.orderRef,
+                items: data.items,
+                timestamp: new Date().toISOString()
+            }));
+        }
+
+        // ─── Copy Order Details ──────────────────────────────────
+
+        function copyOrderDetails() {
+            const data = getQueryParams();
+            const text = `
+        🧾 Cafe Tamia Order
+        ────────────────────
+        Order #: ${data.orderRef}
+        Customer: ${data.name}
+        Address: ${data.address}
+        Contact: ${data.contact}
+        Items: ${data.items.map(i => `${i.name} (₱${i.price})`).join(', ')}
+        Total: ₱${data.total.toFixed(2)}
+        ────────────────────
+        Thank you for your order! ☕
+        `;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ Order details copied!');
+            }).catch(() => {
+                alert('Copy this text:\n' + text);
+            });
+        }
+
+        // ─── Toast Notification ──────────────────────────────────
+
+        function showToast(message) {
+            const existing = document.querySelector('.toast-msg');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            border: 1px solid var(--gold-border);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 0.85rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            animation: slideDown 0.3s ease;
+        `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ─── Go to Thank You ─────────────────────────────────────
+
+        function goToThankYou() {
+            // Update status
+            document.getElementById('statusBadge').className = 'status-badge status-paid';
+            document.getElementById('statusBadge').textContent = '✅ Payment Confirmed';
+
+            // Redirect to thankyou.html
+            window.location.href = 'thankyou.html';
+        }
+
+        // ─── Simulate Payment Check (Optional) ──────────────────
+
+        // You can add auto-check logic here if you have a webhook
+        // For static QR, it's manual verification
+
+        // ─── Init ──────────────────────────────────────────────
+
+        displayOrderDetails();
+
+        // Add slide-down animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // If coming from canceled payment
+        if (window.location.search.includes('canceled=true')) {
+            showToast('⚠️ Payment was cancelled. You can try again.');
+        }
+    </script>
+
+</body>
+</html>
