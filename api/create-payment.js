@@ -19,29 +19,22 @@ export default async function handler(req, res) {
 
   const description = items.map(i => `${i.name} (₱${i.price})`).join(', ');
 
-  const payload = {
-    data: {
-      attributes: {
-        amount: Math.round(total * 100), // centavos
-         payment_method_types: ['card'],  
-        payment_method_options: {
-          card: { request_three_d_secure: 'any' }
-        },
-        description: `Cafe Tamia Order: ${customerName} - ${description}`,
-        statement_descriptor: 'Cafe Tamia',
-        currency: 'PHP',
-        capture_type: 'automatic',
-        metadata: {
-          customer_name: customerName,
-          customer_address: customerAddress,
-          contact: contactNumber,
-          gcash_ref: gcashRef || 'N/A',
-          items: JSON.stringify(items),
-          order_date: timestamp || new Date().toISOString()
-        }
-      }
+const payload = {
+  data: {
+    attributes: {
+      amount: Math.round(total * 100), // centavos
+      // Diri ang saktong key! Kinahanglan array ([ ]) nga naay 'card'
+      payment_method_types: ['card'],  
+      payment_method_options: {
+        card: { request_three_d_secure: 'any' }
+      },
+      description: `Cafe Tamia Order: ${customerName}`,
+      statement_descriptor: 'Cafe Tamia',
+      currency: 'PHP',
+      capture_type: 'automatic'
     }
-  };
+  }
+};
 
   try {
     const response = await fetch('https://api.paymongo.com/v1/payment_intents', {
