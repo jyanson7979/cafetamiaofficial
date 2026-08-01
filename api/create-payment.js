@@ -25,7 +25,7 @@ const payload = {
       amount: Math.round(total * 100),
       currency: 'PHP',
 
-      payment_method_allowed: ['card'], // ✅
+      payment_method_allowed: ['card', 'gcash', 'qrph'], // ✅
 
       payment_method_options: {
         card: {
