@@ -681,15 +681,12 @@
             <ul class="drawer-list" id="drawerOrderList"></ul>
             <div class="drawer-total"><span>Total</span><span id="drawerTotal">₱0</span></div>
 
-            <form class="drawer-form" id="orderForm" onsubmit="return handlePlaceOrder(event)">
-                <input type="text" id="customerName" placeholder="Your Name" required />
-                <input type="text" id="customerAddress" placeholder="Your Address" required />
-                <input type="text" id="contactNumber" placeholder="Your Contact" required />
-                <button type="submit" class="drawer-submit" id="submitBtn">Pay with PayMongo</button>
-            </form>
-            <button class="close-drawer-btn" onclick="toggleDrawer(false)">Close</button>
-        </div>
-    </div>
+            <form class="drawer-form" id="orderForm">
+    <input type="text" id="customerName" placeholder="Your Name" required />
+    <input type="text" id="customerAddress" placeholder="Your Address" required />
+    <input type="text" id="contactNumber" placeholder="Your Contact" required />
+    <button type="button" class="drawer-submit" id="submitBtn" onclick="handlePlaceOrder(event)">Pay with PayMongo</button>
+</form>
 
     <script>
         // ═══════════════════════════════════════════════════════════
@@ -1063,14 +1060,13 @@
 
             // 2. Build order payload
             const orderPayload = {
-                customerName: name,
-                customerAddress: addr,
-                contactNumber: contact,
-                gcashRef: document.getElementById('gcashReference').value.trim() || 'N/A',
-                items: orders.map(o => ({ name: o.name, price: o.price })),
-                total: total,
-                timestamp: new Date().toISOString()
-            };
+    customerName: name,
+    customerAddress: addr,
+    contactNumber: contact,
+    items: orders.map(o => ({ name: o.name, price: o.price })),
+    total: total,
+    timestamp: new Date().toISOString()
+};
 
             // 3. Show loading state
             submitBtn.disabled = true;
